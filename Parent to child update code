@@ -1,0 +1,19 @@
+trigger updateChildWhileUpdatingAccount on Account (After Update) {
+    if(trigger.isAfter && trigger.isUpdate){
+        set<Id>accSetId =trigger.oldMap.keySet();
+        List<Contact>listContact =[SELECT name,accountId,mailingcity from Contact where accountId IN : accSetId];
+        for(account accOld :trigger.oldMap.values()){
+            if(trigger.newMap.containskey(accOld.Id)){
+                if(accOld.BillingCity!=trigger.NewMap.get(accOld.Id).BillingCity){
+                    for(Contact con :listContact){
+                        if(con.AccountId == accOld.Id)
+                        {
+                            con.MailingCity = trigger.NewMap.get(accOld.Id).BillingCity;
+                        }
+                    }
+                }
+            }
+        }
+        update listContact;
+    }
+}
